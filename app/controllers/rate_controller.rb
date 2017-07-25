@@ -1,5 +1,5 @@
 class RateController < ApplicationController
   def show
-    @rate = FixedRate.first.active? ? FixedRate.first.value : RateRequester.new.rate
+    @rate = RateService.new.current_rate
   end
 end

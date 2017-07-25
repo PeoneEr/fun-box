@@ -5,16 +5,28 @@ class Admin::FixedRatesController < ApplicationController
     @fixed_rate = FixedRate.new(fixed_rate_params)
 
     if @fixed_rate.save
-      redirect_to [:admin, :fixed_rate]
+      RateService.new.broadcast_rate
+      BroadcastRateJob.set(wait_until: FixedRate.first.unfix_at + 2.seconds).perform_later
+
+      flash[:notice] = 'Success'
+      redirect_to %i[admin fixed_rate]
     else
+      flash[:notice] = 'An error was occurred'
       render 'show'
     end
   end
 
   def update
-    @fixed_rate.update(fixed_rate_params)
+    if @fixed_rate.update(fixed_rate_params)
+      RateService.new.broadcast_rate
+      BroadcastRateJob.set(wait_until: FixedRate.first.unfix_at + 2.seconds).perform_later
 
-    redirect_to [:admin, :fixed_rate]
+      flash[:notice] = 'Success'
+      redirect_to %i[admin fixed_rate]
+    else
+      flash[:notice] = 'An error was occurred'
+      render 'show'
+    end
   end
 
   def show; end
@@ -23,7 +35,7 @@ class Admin::FixedRatesController < ApplicationController
 
   def fixed_rate_params
     params.require(:fixed_rate)
-      .permit(:value, :unfix_at)
+          .permit(:value, :unfix_at)
   end
 
   def find_fixed_rate

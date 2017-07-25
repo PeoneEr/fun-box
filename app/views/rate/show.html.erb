@@ -3,7 +3,7 @@
     <h1>Currency rate</h1>
 
     <div class='well'>
-      Current rate is <b><%= @rate %></b>
+      Current rate is <b><%= render partial: 'rate', locals: { rate: @rate } %></b>
     </div>
   </div>
 </div>
