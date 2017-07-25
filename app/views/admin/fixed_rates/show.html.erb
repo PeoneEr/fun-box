@@ -1,0 +1,18 @@
+<div class='row'>
+  <div class='col-xs-12'>
+    <h1>Fixed currency rate</h1>
+
+    <div class='well'>
+      Current fixed curreny rate is <%= @fixed_rate.value %>, valid until <%= @fixed_rate.unfix_at %>
+    </div>
+
+    <div class='well'>
+      <%= simple_form_for [:admin, @fixed_rate], url: admin_fixed_rate_path do |f| %>
+        <%= f.input :value %>
+        <%= f.input :unfix_at %>
+
+        <%= f.submit class: 'btn btn-primary' %>
+      <% end %>
+    </div>
+  </div>
+</div>
